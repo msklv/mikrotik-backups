@@ -12,11 +12,12 @@ $Routers = $config.Routers
 
 
 # ___________________  Проверки  ______________________
-# модуль Posh-SSH установлен
-#if (-not (Get-Module -ListAvailable -Name Posh-SSH)) {
-#    Install-Module Posh-SSH -Force
-#}
-#Import-Module Posh-SSH
+# Версия PowerShell >= 6
+if ($PSVersionTable.PSVersion.Major -lt 6) {
+    Write-Host "Версия PowerShell должна быть >= 6.0" -ForegroundColor Red
+    Write-Host "    Текущая версия: $($PSVersionTable.PSVersion)" -ForegroundColor DarkGray
+    exit
+}
 
 # Папка для бэкапов существует
 if (-not (Test-Path $backupDir -PathType Container)) {
@@ -37,10 +38,10 @@ if (-not (Test-Path $currentDir -PathType Container)) {
 # ___________________  Основной код  ______________________
 
 foreach ($router in $Routers) {
-    $ip = $router.IP
-    $user = $router.User
-    $pass = $router.Password
-    $label = $router.Label
+    $ip         = $router.IP
+    $user       = $router.User
+    $pass       = $router.Password
+    $label      = $router.Label
 
     Write-Host
     Write-Host "Подключение к $ip" -ForegroundColor Cyan
@@ -65,6 +66,7 @@ foreach ($router in $Routers) {
     } catch {
         Write-Host "Ошибка при проверке SSH на роутере $label ( $ip  )" -ForegroundColor Red
         Write-Host "Пропускаем" -ForegroundColor DarkGray
+        Write-Host "    Ошибка: $_" -ForegroundColor DarkGray
         continue
     }
 
@@ -78,14 +80,14 @@ foreach ($router in $Routers) {
     
     # Сохраняем вывод в файл
     $date = Get-Date -Format "yyyy-MM-dd_HH-mm"
-    $backupFilePath = "$backupDir\$label-$date.conf"
-    $currentFilePath = "$currentDir\$label.conf"
+    $backupFilePath = "$backupDir\$label-$date.rsc"
+    $currentFilePath = "$currentDir\$label.rsc"
     try {
         $result.Output | Out-File -Encoding utf8 $backupFilePath
         $result.Output | Out-File -Encoding utf8 $currentFilePath -Force
     } catch {
         Write-Host "Ошибка при сохранении конфигурации с роутера $label ( $ip )" -ForegroundColor Red
-        <#Do this if a terminating exception happens#>
+        Write-Host "    Ошибка: $_" -ForegroundColor DarkGray
     }
 
 

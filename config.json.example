@@ -1,0 +1,23 @@
+{
+    "routers": [
+        {
+            "ip": "192.168.1.1",
+            "user": "admin",
+            "password": "",
+            "label": "L009UiGS-2HaxD"
+        },
+        {
+            "ip": "192.168.10.1",
+            "user": "admin",
+            "password": "",
+            "label": "911-2HaxD"
+        },
+        {
+            "ip": "192.168.1.2",
+            "user": "admin",
+            "password": "",
+            "label": "RBSXTsq2nD"
+
+        }
+    ]
+}

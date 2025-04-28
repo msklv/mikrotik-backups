@@ -1,1 +1,6 @@
+# Чувствительные данные
 config.json
+/backups
+/current
+
+
